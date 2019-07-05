@@ -1,15 +1,13 @@
 import wave
 import numpy as np
-from matplotlib import pylab as plt
 import struct
 import pyaudio
-import pandas
 
 
 def play_wav(wav_path):
     try:
         wf = wave.open(wav_path, "r")
-    except FileNotFoundError as e:
+    except Exception as e:
         raise e
     # open stream
     p = pyaudio.PyAudio()
@@ -29,14 +27,13 @@ def play_wav(wav_path):
 
 
 def play_binary(binwave, fs, nchannels=1):
-    bit = 16
     p = pyaudio.PyAudio()
     stream = p.open(format=pyaudio.paInt16,
                     channels=nchannels,
                     rate=int(fs),
                     output=True)
     chunk = 1024
-    sp = 0 # pointer of play position
+    sp = 0  # pointer of play position
     data = binwave[sp:sp+chunk]
     while data != b"":
         stream.write(data)
@@ -71,7 +68,8 @@ def make_binary(A=1, fs=8000, f0=440, sec=1):
 
 
 def make_wav(binwave, wav_path,
-             nchannels=1, sampwidth=2, framerate=8000, comptype="NONE", compname="not complessed"):
+             nchannels=1, sampwidth=2, framerate=8000,
+             comptype="NONE", compname="not complessed"):
     nframes = len(binwave)
     w = wave.Wave_write(wav_path)
     p = (nchannels, sampwidth, framerate, nframes, comptype, compname)
